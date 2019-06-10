@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cungudafa.spingmvc01.dao.StudentInfoDao"><!-- 表示该xml和哪个DAO接口对应 -->
+
+	<!-- 配置使自定义的DAO接口生效的方法 -->
+	<!-- 配置addStudentInfo方法 -->
+	<insert id="addStudentInfo" parameterType="StudentInfo">
+		<!-- insert方法，标签id和接口方法名相同，方法的形参的类型 -->
+		insert into student_info(student_name,student_number)
+		values(#{studentName},#{studentNumber})
+		<!-- 表示接口的addStudentInfo方法要执行的sql语句，#{}表示从方法的形参里取值 -->
+	</insert>
+
+	<!-- 配置deleteStudentInfo方法 -->
+	<delete id="deleteStudentInfo" parameterType="StudentInfo">
+		delete from
+		student_info where student_id = #{studentId}
+	</delete>
+
+	<!-- 配置updateStudentInfo方法 -->
+	<update id="updateStudentInfo" parameterType="StudentInfo">
+		update student_info
+		set student_name = #{studentName},
+		student_number = #{studentNumber}
+		where student_id = #{studentId}
+	</update>
+
+	<!-- 针对查询的结果集，配置查询结果和实体类的映射关系 -->
+	<resultMap type="StudentInfo" id="stumap">
+		<!-- 配置主键映射,student_info 表中的student_id字段映射到StudentInfo类中的studentId成员变量 -->
+		<id column="student_id" property="studentId" />
+		<!-- 配置非主键映射 student_info 表中的student_name字段映射到StudentInfo类中的studentName成员变量 -->
+		<result column="student_name" property="studentName" />
+		<result column="student_number" property="studentNumber" />
+	</resultMap>
+
+	<select id="getStudentInfoById" parameterType="StudentInfo"
+		resultMap="stumap">
+		select * from student_info where student_id=#{studentId}
+	</select>
+
+	<!-- <select id="getStudentInfos" resultType="List" resultMap="stumap"> 
+		select * from student_info; </select> -->
+
+	<select id="getStudentInfos" parameterType="StudentInfo"
+		resultType="List" resultMap="stumap">
+		select * from student_info
+		<where>
+			<if test="studentName != null and studentName !=''">
+				and student_name like #{studentName}
+			</if>
+			<if test="studentNumber != null and studentNumber != ''">
+				and student_number like #{studentNumber}
+			</if>
+		</where>
+	</select>
+
+</mapper>
+
+
+
+
+
+
+

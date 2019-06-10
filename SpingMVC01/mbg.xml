@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+    <!--配置数据库链接-->
+    <context id="DB2Tables" targetRuntime="MyBatis3">
+        <!--去掉多余的注释-->
+        <commentGenerator>
+            <property name="suppressAllComments" value ="true"/>
+        </commentGenerator>
+
+        <!--com.mysql.cj.jdbc.Driver，注意&amp;转义-->
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/ssm_mysql?useSSL=false&amp;serverTimezone=UTC"
+                        userId="root"
+                        password="wy123456">
+        </jdbcConnection>
+
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <!--指定javabean生成的位置-->
+        <javaModelGenerator targetPackage="com.cungudafa.spingmvc01.bean" targetProject=".\src\main\java">
+            <property name="enableSubPackages" value="true" />
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+        <!--指定sql映射文件生成的位置-->
+        <sqlMapGenerator targetPackage="com.cungudafa.spingmvc01.dao"  targetProject=".\src\main\resources">
+            <property name="enableSubPackages" value="true" />
+        </sqlMapGenerator>
+
+        <!--指定dao接口生成的位置-->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.cungudafa.spingmvc01.dao"  targetProject=".\src\main\java">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+
+        <!--table指定每个表的生成策略-->
+        <table tableName="employee" 
+        	enableCountByExample="true"
+           	enableUpdateByExample="true"
+           	enableDeleteByExample="true"
+           	enableSelectByExample="true"
+            selectByExampleQueryId="false"
+			domainObjectName="Employee"></table>
+        <table tableName="department" 
+        	enableCountByExample="true"
+           	enableUpdateByExample="true"
+           	enableDeleteByExample="true"
+           	enableSelectByExample="true"
+            selectByExampleQueryId="false"
+        	domainObjectName="Department"></table>
+
+    </context>
+</generatorConfiguration>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cungudafa.spingmvc01.dao.one2one.IdCardDao">
+	
+	<resultMap type="IdCard" id="imap">
+		<id column="idcard_id" property="idCardId"/>
+		<result column="idcard_number" property="idCardNumber"/>
+		<association property="person" javaType="Person">
+			<id column="person_id" property="personId"/>
+			<result column="person_name" property="personName"/>
+		</association>
+	</resultMap>
+	
+	<select id="getIdCardById" parameterType="IdCard" resultMap="imap">
+		select * from idcard t1,person t2 
+		where t1.person_id = t2.person_id and t1.idcard_id = #{idCardId}
+	</select>
+	 
+</mapper>

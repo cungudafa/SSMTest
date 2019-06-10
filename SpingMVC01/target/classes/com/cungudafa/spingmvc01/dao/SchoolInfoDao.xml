@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cungudafa.spingmvc01.dao.SchoolInfoDao">
+	
+	<resultMap type="schoolInfo" id="smap">
+		<id column="school_id" property="schoolId"/>
+		<result column="school_name" property="schoolName"/>
+		<collection property="teachers" ofType="TeacherInfo">
+		<!-- property属性放的是schoolInfo实体类里面的属性名teachers,oftype:对应实体类的全路径,column:两张表关联字段 -->
+			<id column="teacher_id" property="teacherId"/>
+			<result column="teacher_name" property="teacherName"/>
+		</collection>
+	</resultMap>
+	
+	<select id="getSchoolById" parameterType="schoolInfo" resultMap="smap">
+		select * from school t1,teacher_info t2 
+		where t1.school_id = t2.school_id and t1.school_id = #{schoolId}
+	</select>
+	<select id="getSchoolList" parameterType="schoolInfo"
+		resultType="List" resultMap="smap">
+		select * from school
+		<where>
+			<if test="schoolId != null and schoolId != 0">
+				and school_id = #{schoolId}
+			</if>
+			<if test="schoolName != null and schoolName !=''">
+				and school_name like #{schoolName}
+			</if>
+		</where>
+		limit #{start},#{length}
+	</select>
+	<select id="getSchool"  resultMap="smap">
+		select * from school t1
+		left outer join teacher_info t2 
+		on t1.school_id = t2.school_id
+	</select>
+</mapper>

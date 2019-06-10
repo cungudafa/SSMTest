@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cungudafa.spingmvc01.dao.TeacherInfoDao">
+
+	
+	<resultMap type="TeacherInfo" id="teachermap">
+	<!-- type:对应的实体类 -->
+		<id column="teacher_id" property="teacherId" />
+		<!-- column:对应是数据库中的名字,property属性对应的是实体类中的属性名 -->
+		<result column="teacher_name" property="teacherName" />
+		<result column="teacher_number" property="teacherNumber" />
+		<association property="school" javaType="schoolInfo">
+		<!-- property="school"定义在是bean中TeacherInfo的外键 -->
+		<!-- javaType="schoolInfo"映射外键关联的表，与bean中名称相同 -->
+			<id column="school_id" property="schoolId"/><!-- 主键 -->
+			<result column="school_name" property="schoolName"/><!-- 非主键 -->
+		</association>
+	</resultMap>
+
+	<select id="getTeacherList" parameterType="TeacherInfo"
+		resultType="List" resultMap="teachermap">
+		<!-- resultMap(返回值类型):对应的是resultMap标签的ID -->
+		select * from teacher_info
+		left outer join school<!-- left outer join:把school相关内容左连接到teacher表 -->
+		on teacher_info.school_id = school.school_id
+		<where>	
+			<if test="teacherId != null and teacherId != 0">
+				and teacher_id = #{teacherId}
+			</if>
+			<if test="teacherName != null and teacherName !=''">
+				and teacher_name like #{teacherName}
+			</if>
+			<if test="teacherNumber != null and teacherNumber != ''">
+				and teacher_number like #{teacherNumber}
+			</if>
+			<if test="schoolId != null and schoolId != 0">
+				and teacher_info.school_id like #{schoolId}
+			</if>
+		</where>
+		limit #{start},#{length}<!-- 未查询第几条记录做标记,方便后面按记录标记 -->
+	</select>
+
+	<select id="getTeacherCount" parameterType="TeacherInfo"
+		resultType="Long"><!-- 计算出查询有多少条记录，为翻页做记号 -->
+		select count(*) from teacher_info
+		<where>
+			<if test="teacherId != null and teacherId != 0">
+				and teacher_id = #{teacherId}
+			</if>
+			<if test="teacherName != null and teacherName !=''">
+				and teacher_name like #{teacherName}
+			</if>
+			<if test="teacherNumber != null and teacherNumber != ''">
+				and teacher_number like #{teacherNumber}
+			</if>
+			<if test="schoolId != null and schoolId != ''">
+				and school_id like #{schoolId}
+			</if>
+		</where>
+	</select>
+
+	<insert id="addTeacher" parameterType="TeacherInfo">
+		insert into
+		teacher_info(teacher_name,teacher_number,school_id)
+		values(#{teacherName},#{teacherNumber},#{schoolId})
+	</insert>
+	<update id="updateTeacher" parameterType="TeacherInfo">
+		update teacher_info set
+		teacher_name = #{teacherName},
+		teacher_number = #{teacherNumber},
+		school_id = #{schoolId}
+		where
+		teacher_id = #{teacherId}
+	</update>
+
+	<delete id="deleteTeacher" parameterType="TeacherInfo">
+		delete from
+		teacher_info where teacher_id = #{teacherId}
+	</delete>
+</mapper>
